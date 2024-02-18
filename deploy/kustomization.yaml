@@ -3,7 +3,7 @@ kind: Kustomization
 resources:
   - deployment.yaml
   - service.yaml
-  - rbac.yaml
+  # - rbac.yaml # Not enough permissions to create
 images:
   - newName: shchyp/devops-test
     newTag: v1

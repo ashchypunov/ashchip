@@ -40,4 +40,13 @@ Suggest how we can implement next items. Add your suggestions into this README f
 
 ### Suggestions
 
-put you suggestions here
+#### Managing secrets:
+
+External tools like AWS Secrets Manager and HashiCorp Vault can be used to store and manage confidential data, and then integrated with Kubernetes.
+
+#### Monitoring and logging:
+For logging could be used [fluentd](https://github.com/fluent/helm-charts/tree/main/charts/fluentd) daemonset which will stream logs in AWS OpenSearch (in fact the same Elasticsearch)
+
+[Datadog](https://www.datadoghq.com/) can be used as a comprehensive solution for monitoring K8S applications and AWS infrastructure.
+
+[Kube-prom-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) could be used for monitoring k8s. This stack already has Prometheus, Graphane, Alertmanager and a bunch of settings for a K8S.
