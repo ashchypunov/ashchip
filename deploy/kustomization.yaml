@@ -5,7 +5,7 @@ resources:
   - service.yaml
   - rbac.yaml
 images:
-  - newName: devops-test
+  - newName: shchyp/devops-test
     newTag: v1
     name: devops-test
 namespace: default

@@ -1,2 +1,12 @@
 auth:
   rootPassword: "devops-test"
+primary:
+  tolerations:
+  - key: "system"
+    operator: "Exists"
+    effect: "NoSchedule"
+secondary:
+  tolerations:
+  - key: "system"
+    operator: "Exists"
+    effect: "NoSchedule"
