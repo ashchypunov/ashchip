@@ -10,11 +10,27 @@ spec:
     matchLabels:
       app: devops-test
   strategy:
+   type: RollingUpdate
+   rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 0
   template:
     metadata:
       labels:
         app: devops-test
     spec:
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app: devops-test
+      initContainers:
+        - image: busybox
+          name: check-db
+          command: ['/bin/sh']
+          args: ['-c', 'until nc -z devops-test-mysql 3306; do echo waiting for devops-test-mysql; sleep 5; done;']
       containers:
       - image: devops-test
         imagePullPolicy: IfNotPresent
@@ -24,9 +40,13 @@ spec:
             valueFrom:
               secretKeyRef:
                 key: mysql-root-password
-                name: mysql
+                name: devops-test-mysql
           - name: NODE_NAME
-            value: "minikube-test"
+            valueFrom:
+              fieldRef:
+                  fieldPath: spec.nodeName
+          - name: DATABASE_HOSTNAME
+            value: "devops-test-mysql"
         ports:
           - containerPort: 8000
             name: http
@@ -38,3 +58,25 @@ spec:
           limits:
             cpu: 2
             memory: 2G
+        securityContext:
+          runAsUser: 9999
+          runAsGroup: 9999
+          allowPrivilegeEscalation: false
+        livenessProbe:
+          httpGet:
+            path: /get-node
+            port: http
+          failureThreshold: 3
+          initialDelaySeconds: 20
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /get-node
+            port: http
+          failureThreshold: 3
+          initialDelaySeconds: 5
+          periodSeconds: 2
+          successThreshold: 1
+          timeoutSeconds: 1

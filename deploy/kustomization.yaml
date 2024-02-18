@@ -3,8 +3,16 @@ kind: Kustomization
 resources:
   - deployment.yaml
   - service.yaml
+  - rbac.yaml
 images:
   - newName: devops-test
     newTag: v1
     name: devops-test
 namespace: default
+
+helmCharts:
+  - name: mysql
+    repo: oci://registry-1.docker.io/bitnamicharts
+    releaseName: devops-test
+    namespace: default
+    valuesFile: values.yaml

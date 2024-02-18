@@ -10,10 +10,11 @@ from sqlalchemy.sql import text
 
 app = FastAPI()
 DATABASE_PASSWORD = os.environ.get('DATABASE_PASSWORD')
+DATABASE_HOSTNAME = os.environ.get('DATABASE_HOSTNAME')
 if not DATABASE_PASSWORD:
     DATABASE_URL = os.environ.get("DATABASE_URL", "sqlite:///./test.db")
 else:
-    DATABASE_URL = f"mysql+mysqlconnector://root:{DATABASE_PASSWORD}@mysql:3306/mysql"
+    DATABASE_URL = f"mysql+mysqlconnector://root:{DATABASE_PASSWORD}@{DATABASE_HOSTNAME}:3306/mysql"
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -54,4 +55,3 @@ async def health_check(db: Session = Depends(get_db)):
     except OperationalError as e:
         # Handle database connection failure
         raise HTTPException(status_code=503, detail="Database connection failure")
-

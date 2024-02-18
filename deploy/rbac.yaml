@@ -1,0 +1,33 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: developers-role
+  namespace: default
+rules:
+  - apiGroups:
+      - ""
+    resources: ["service", "pods", "pods/log", "configmaps"]
+    verbs: ["get", "list", "create", "update", "delete"]
+
+  - apiGroups: ["apps"]
+    resources: ["deployments", "statefulsets"]
+    verbs: ["get", "list", "create", "update", "delete"]
+
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["get", "list", "create", "update", "delete"]
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: developers-binding
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  name: developers-role
+  kind: Role
+subjects:
+  - kind: Group
+    name: developers
+    apiGroup: rbac.authorization.k8s.io
